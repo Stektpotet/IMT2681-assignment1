@@ -1,0 +1,12 @@
+{
+  "name": "GithubStats",
+  "description": "A service for obtaining stats from repositories on github",
+  "keywords": [
+    "github",
+    "go"
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "src/github.com/stektpotet/imt2681-assignment1",
+  "website": "http://github.com/stektpotet/imt2681-assignment1",
+  "repository": "github.com/stektpotet/imt2681-assignment1"
+}
