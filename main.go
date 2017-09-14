@@ -64,5 +64,5 @@ func main() {
 	// client := github.NewClient(nil)
 
 	http.HandleFunc(BASE_PATH, githubProjectInfoHandler)
-	http.ListenAndServe("localhost:8080", nil)
+	http.ListenAndServe("0.0.0.0:8080", nil)
 }
