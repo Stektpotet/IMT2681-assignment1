@@ -2,5 +2,9 @@
 	"comment": "",
 	"ignore": "test",
 	"package": [],
-	"rootPath": "github.com/stektpotet/imt2681-assignment1"
+	"rootPath": "github.com/stektpotet/imt2681-assignment1",
+	"heroku": {
+		"install" : [ "./..." ],
+		"goVersion" : "go1.8.3"
+	}
 }
