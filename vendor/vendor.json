@@ -1,7 +1,38 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "Qq7Gzany1n6gK6hpZQq9UXFhGGo=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "M8Z61f8GZs6CO23wP+ekRgZEo+w=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin/binding",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "/cPJSLLdEAWI/Mavbbe13RgSfP4=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin/render",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "AaqJkPBgKZlGoT32sOEsU3ThqnA=",
+			"path": "github.com/heroku/x/hmetrics",
+			"revision": "db51a09f7a0194d45555aa12fabfa060d017d41a",
+			"revisionTime": "2017-08-01T22:59:35Z"
+		},
+		{
+			"checksumSHA1": "GOeW0t8PSBNHFTUHmdSgPv2kl/0=",
+			"path": "github.com/heroku/x/hmetrics/onload",
+			"revision": "db51a09f7a0194d45555aa12fabfa060d017d41a",
+			"revisionTime": "2017-08-01T22:59:35Z"
+		}
+	],
 	"rootPath": "github.com/stektpotet/imt2681-assignment1",
 	"heroku": {
 		"install" : [ "./..." ],

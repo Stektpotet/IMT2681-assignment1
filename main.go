@@ -6,7 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/heroku/x/hmetrics/onload"
 )
 
 const BASE_PATH = "/projectinfo/v1/"
@@ -130,7 +134,15 @@ func getRequestBody(repoPath string) []byte {
 
 func main() {
 	// client := github.NewClient(nil)
+	port := os.Getenv("PORT")
 
-	http.HandleFunc(BASE_PATH, githubProjectInfoHandler)
-	http.ListenAndServe(":8080", nil)
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
+	router := gin.New()
+	router.Static("/static", "static")
+
+	router.GET(BASE_PATH, githubProjectInfoHandler)
+	router.Run(":" + port)
 }
