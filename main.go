@@ -34,6 +34,8 @@ type ResponseData struct {
 
 func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 
+	var serviceResponse ResponseData
+
 	// fmt.Fprintf(writer "user: %s\n", pathVars[4])
 	// fmt.Fprintf(writer "repo: %s\n", pathVars[5])
 	repoPath := getRepoPath(r.URL.Path)
@@ -50,6 +52,8 @@ func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(writer, "=============================\tProject info\t=============================")
 	fmt.Fprintln(writer, "project name:\t"+project.Name)
 	fmt.Fprintln(writer, "owner name:\t"+project.Owner.Username)
+	serviceResponse.Project = project.Name
+	serviceResponse.Owner = project.Owner.Username
 
 	topContributor := GithubUser{Username: "", ID: 0, Commits: 0}
 	fmt.Fprintln(writer, "=============================\tContributors\t=============================")
@@ -66,18 +70,24 @@ func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 		}
 	}
 	fmt.Fprintf(writer, "\nTop Contributor:\t%s, who made %v commits\n", topContributor.Username, topContributor.Commits)
+
+	serviceResponse.Committer = topContributor.Username
+	serviceResponse.Commits = topContributor.Commits
+
 	fmt.Fprintln(writer, "=============================\tLanguages\t=============================")
 	jsonBody = getRequestBody(languagesPath)
 
 	var topLanguage string
 	topLanguageBytes := 0
-	languages := map[string]int{} //https://coderwall.com/p/4c2zig/decode-top-level-json-array-into-a-slice-of-structs-in-golang
-	if err := json.Unmarshal(jsonBody, &languages); err != nil {
+	languageMap := map[string]int{} //https://coderwall.com/p/4c2zig/decode-top-level-json-array-into-a-slice-of-structs-in-golang
+	if err := json.Unmarshal(jsonBody, &languageMap); err != nil {
 		log.Println(string(jsonBody))
 		log.Println(err)
 	}
-	for key, value := range languages {
+	languages := make([]string, 0, len(languageMap))
+	for key, value := range languageMap {
 		fmt.Fprintf(writer, "Language:\t%s,\t bytes of code: %v\n", key, value)
+		languages = append(languages, key)
 		if topLanguageBytes < value {
 			topLanguage = key
 			topLanguageBytes = value
@@ -85,24 +95,31 @@ func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(writer, "\nMost used Language:\t%s, with %v bytes of code\n", topLanguage, topLanguageBytes)
 
+	serviceResponse.Languages = languages
+
 	// fmt.Fprintln(writer GITHUB_API_HOST_URL+repoPath)
 	// fmt.Fprintln(writer "Projectinfo: "+string(getRequestBody(repoPath)))
 
 }
 
 func getRepoPath(originalPath string) string {
+	//projectinfo/v1/repos/stektpotet/Amazeking
 	URLPath := originalPath
 
 	pathVars := strings.Split(URLPath, "/")
 	if len(pathVars) < 5 {
-		URLPath = "repos/stektpotet/Amazeking"
+		URLPath = "stektpotet/Amazeking"
 	}
 
-	return strings.TrimPrefix(URLPath, BASE_PATH)
+	URLPath = strings.TrimPrefix(URLPath, BASE_PATH)
+	return strings.Replace(URLPath, "github.com", "repos", 1)
 }
 
 func getRequestBody(repoPath string) []byte {
 	response, err := http.Get(GITHUB_API_HOST_URL + repoPath)
+	if err != nil {
+
+	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 
@@ -115,5 +132,5 @@ func main() {
 	// client := github.NewClient(nil)
 
 	http.HandleFunc(BASE_PATH, githubProjectInfoHandler)
-	http.ListenAndServe("0.0.0.0:8080", nil)
+	http.ListenAndServe(":8080", nil)
 }
