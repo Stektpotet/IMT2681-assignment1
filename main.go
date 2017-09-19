@@ -11,6 +11,7 @@ import (
 )
 
 const BASE_PATH = "/projectinfo/v1/"
+const DEFAULT_REPO_PATH = "repos/apache/kafka"
 
 // GITHUB API HOST URL for access to github api
 const GITHUB_API_HOST_URL = "https://api.github.com/"
@@ -35,6 +36,8 @@ type ResponseData struct {
 
 func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 
+	//TODO - Only handle r.Method == "GET"
+	writer.Header().Add("content-type", "application/json")
 	var serviceResponse ResponseData
 
 	// fmt.Fprintf(writer "user: %s\n", pathVars[4])
@@ -80,7 +83,7 @@ func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 
 	var topLanguage string
 	topLanguageBytes := 0
-	languageMap := map[string]int{} //https://coderwall.com/p/4c2zig/decode-top-level-json-array-into-a-slice-of-structs-in-golang
+	languageMap := make(map[string]int) //https://coderwall.com/p/4c2zig/decode-top-level-json-array-into-a-slice-of-structs-in-golang
 	if err := json.Unmarshal(jsonBody, &languageMap); err != nil {
 		log.Println(string(jsonBody))
 		log.Println(err)
@@ -97,8 +100,8 @@ func githubProjectInfoHandler(writer http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(writer, "\nMost used Language:\t%s, with %v bytes of code\n", topLanguage, topLanguageBytes)
 
 	serviceResponse.Languages = languages
+	json.NewEncoder(writer).Encode(serviceResponse)
 
-	// fmt.Fprintln(writer GITHUB_API_HOST_URL+repoPath)
 	// fmt.Fprintln(writer "Projectinfo: "+string(getRequestBody(repoPath)))
 
 }
@@ -109,7 +112,7 @@ func getRepoPath(originalPath string) string {
 
 	pathVars := strings.Split(URLPath, "/")
 	if len(pathVars) < 5 {
-		URLPath = "stektpotet/Amazeking"
+		URLPath = DEFAULT_REPO_PATH
 	}
 
 	URLPath = strings.TrimPrefix(URLPath, BASE_PATH)
