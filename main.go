@@ -70,7 +70,7 @@ func getContributorInfo(jsonBody []byte, r *ResponseData) {
 
 func getLanguageInfo(jsonBody []byte, r *ResponseData) {
 
-	languageMap := make(map[string]int) //https://coderwall.com/p/4c2zig/decode-top-level-json-array-into-a-slice-of-structs-in-golang
+	languageMap := make(map[string]int)
 	if err := json.Unmarshal(jsonBody, &languageMap); err != nil {
 		log.Fatalln(string(jsonBody))
 		log.Fatalln(err)
