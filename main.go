@@ -93,7 +93,6 @@ func runService(path string, devEnv bool) (ResponseData, error) {
 		}
 		jsonBodies = setupLocal() //local service only uses DefaultRepoPath
 	} else {
-		log.Println("runing remotely!")
 		repoPath, serviceError := getRepoPath(path)
 		if serviceError != nil {
 			return ResponseData{}, serviceError
