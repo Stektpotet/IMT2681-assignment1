@@ -122,7 +122,7 @@ func serviceHandler(writer http.ResponseWriter, r *http.Request) {
 func getRepoPath(originalPath string) (string, error) {
 	URLPath := originalPath
 	pathVars := strings.Split(URLPath, "/")
-	if len(pathVars) != 6 {
+	if len(pathVars) != 6 || pathVars[5] == "" {
 		return DefaultRepoPath, errors.New("Invalid URL PATH: " + URLPath)
 	}
 	//@TODO regex filtering username
