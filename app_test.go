@@ -81,14 +81,17 @@ func Test_GetRepoPathNonValid(t *testing.T) {
 
 //==============================SERVICE HANDLER REQUEST TESTS =================
 
+//http handler tests written as suggested by by Matt Silverlock
+//https://elithrar.github.io/article/testing-http-handlers-go/
+
 func Test_ServiceHandlerSEND(t *testing.T) {
 	reqest, _ := http.NewRequest("SEND", ServiceBasePath+DefaultRepoPath, nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(serviceHandler)
 	handler.ServeHTTP(rr, reqest)
-
+	//EXPECT ERROR, STATUS NOT ALLOWED
 	if status := rr.Code; status != http.StatusMethodNotAllowed {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusMethodNotAllowed)
 	}
 }
 
@@ -97,7 +100,7 @@ func Test_ServiceHandlerGET(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(serviceHandler)
 	handler.ServeHTTP(rr, reqest)
-
+	//NOT EXPECTING ERROR
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
