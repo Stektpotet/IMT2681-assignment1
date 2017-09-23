@@ -5,21 +5,20 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-
-	os.Exit(m.Run())
-}
+// func TestMain(m *testing.M) {
+//
+// 	os.Exit(m.Run())
+// }
 
 func Test_JSONUnmarshalProjectInfo(t *testing.T) {
 	const jsonBody = `{
-        "full_name": "Bob/Project1",
+        "name": "Project1",
         "owner": {"login": "Bob"}
     }`
-	expectedResult := ProjectInfo{Name: "Bob/Project1", Owner: GithubUser{Username: "Bob"}}
+	expectedResult := ProjectInfo{Name: "Project1", Owner: GithubUser{Username: "Bob"}}
 	var result ProjectInfo
 	if err := json.Unmarshal([]byte(jsonBody), &result); err != nil {
 		t.Error(err)

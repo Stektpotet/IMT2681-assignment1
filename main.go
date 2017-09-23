@@ -11,6 +11,9 @@ import (
 	"strings"
 )
 
+//LocalSamplesPath - The relative path to locally stored project files, allowing testing locally
+const LocalSamplesPath = "./LocalSamples/"
+
 //ServiceBasePath -Base path for this service
 const ServiceBasePath = "/projectinfo/v1/"
 
@@ -22,7 +25,7 @@ const GithubAPIHostURL = "https://api.github.com/"
 
 //ProjectInfo - The project name and its owner
 type ProjectInfo struct {
-	Name  string     `json:"full_name"`
+	Name  string     `json:"name"`
 	Owner GithubUser `json:"owner"`
 }
 
@@ -54,7 +57,7 @@ func getProjectInfo(jsonBody []byte, r *ResponseData) {
 		log.Fatalln(string(jsonBody))
 		log.Fatalln(err)
 	}
-	r.Project = "github.com/" + project.Name
+	r.Project = project.Name
 	r.Owner = project.Owner.Username
 }
 
@@ -163,16 +166,14 @@ func setupRemote(repoPath string) RequestBodies {
 }
 
 func readLocalWorkingFile(filename string) []byte {
-	devPath := os.Getenv("LOCALPROJECT")
-	data, err := ioutil.ReadFile(devPath + filename + ".json")
+	data, err := ioutil.ReadFile(LocalSamplesPath + filename + ".json")
 	if err != nil {
-		log.Fatalf("Could not open local working file:%s", devPath+filename+".json")
+		log.Fatalf("Could not open local working file:%s", LocalSamplesPath+filename+".json")
 	}
 	return data
 }
 
 func main() {
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
