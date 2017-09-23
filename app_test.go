@@ -8,12 +8,7 @@ import (
 	"testing"
 )
 
-// func TestMain(m *testing.M) {
-//
-// 	os.Exit(m.Run())
-// }
-
-func Test_JSONUnmarshalProjectInfo(t *testing.T) {
+func TestJSONUnmarshalProjectInfo(t *testing.T) {
 	const jsonBody = `{
         "name": "Project1",
         "owner": {"login": "Bob"}
@@ -31,7 +26,7 @@ func Test_JSONUnmarshalProjectInfo(t *testing.T) {
 	}
 }
 
-func Test_JSONMarshallResponse(t *testing.T) {
+func TestJSONMarshallResponse(t *testing.T) {
 	const expectedResult = `{"project":"kafka","owner":"apache","committer":"enothereska","commits":19,"language":["Java","Scala","Python","Shell","Batchfile"]}`
 	responseBody := ResponseData{
 		Project:   "kafka",
@@ -66,15 +61,15 @@ var GetRepoPathTest = func(in string, expectedOut string, expectError bool, t *t
 	}
 }
 
-func Test_GetRepoPathDefault(t *testing.T) {
+func TestGetRepoPathDefault(t *testing.T) {
 	GetRepoPathTest(ServiceBasePath+DefaultRepoPath, DefaultRepoPath, false, t)
 }
 
-func Test_GetRepoPathEmpty(t *testing.T) {
+func TestGetRepoPathEmpty(t *testing.T) {
 	GetRepoPathTest("", DefaultRepoPath, true, t)
 }
 
-func Test_GetRepoPathNonValid(t *testing.T) {
+func TestGetRepoPathNonValid(t *testing.T) {
 	GetRepoPathTest("cov/fe/fe", DefaultRepoPath, true, t)
 }
 
@@ -83,7 +78,7 @@ func Test_GetRepoPathNonValid(t *testing.T) {
 //http handler tests written as suggested by by Matt Silverlock
 //https://elithrar.github.io/article/testing-http-handlers-go/
 
-func Test_ServiceHandlerSEND(t *testing.T) {
+func TestServiceHandlerSEND(t *testing.T) {
 	reqest, _ := http.NewRequest("SEND", ServiceBasePath+DefaultRepoPath, nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(serviceHandler)
@@ -94,7 +89,7 @@ func Test_ServiceHandlerSEND(t *testing.T) {
 	}
 }
 
-func Test_ServiceHandlerGET(t *testing.T) {
+func TestServiceHandlerGET(t *testing.T) {
 	reqest, _ := http.NewRequest("GET", ServiceBasePath+DefaultRepoPath, nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(serviceHandler)
@@ -103,6 +98,18 @@ func Test_ServiceHandlerGET(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
+	}
+}
+
+func TestServiceHandlerGETBadRequest(t *testing.T) {
+	reqest, _ := http.NewRequest("GET", ServiceBasePath+DefaultRepoPath+"/covfefe", nil)
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(serviceHandler)
+	handler.ServeHTTP(rr, reqest)
+	//NOT EXPECTING ERROR
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusBadRequest)
 	}
 }
 
@@ -127,13 +134,13 @@ var FullServiceTest = func(path string, devEnv bool, expectError bool, t *testin
 	}
 }
 
-func Test_RunServiceRemote(t *testing.T) {
+func TestRunServiceRemote(t *testing.T) {
 	FullServiceTest(ServiceBasePath+DefaultRepoPath, true, false, t)
 }
 
-func Test_RunServiceLocal(t *testing.T) {
+func TestRunServiceLocal(t *testing.T) {
 	FullServiceTest(ServiceBasePath+DefaultRepoPath, true, false, t)
 }
-func Test_RunServiceLocalBadRequest(t *testing.T) {
+func TestRunServiceLocalBadRequest(t *testing.T) {
 	FullServiceTest("", true, true, t)
 }
