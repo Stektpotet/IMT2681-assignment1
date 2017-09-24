@@ -55,7 +55,6 @@ func getProjectInfo(jsonBody []byte, r *ResponseData) {
 	var project ProjectInfo
 	if err := json.Unmarshal(jsonBody, &project); err != nil {
 		log.Fatalln(string(jsonBody))
-		log.Fatalln(err)
 	}
 	r.Project = project.Name
 	r.Owner = project.Owner.Username
@@ -65,7 +64,6 @@ func getContributorInfo(jsonBody []byte, r *ResponseData) {
 	contributors := make([]GithubUser, 0)
 	if err := json.Unmarshal(jsonBody, &contributors); err != nil {
 		log.Fatalln(string(jsonBody))
-		log.Fatalln(err)
 	}
 	r.Committer = contributors[0].Username
 	r.Commits = contributors[0].Commits
@@ -76,7 +74,6 @@ func getLanguageInfo(jsonBody []byte, r *ResponseData) {
 	languageMap := make(map[string]int)
 	if err := json.Unmarshal(jsonBody, &languageMap); err != nil {
 		log.Fatalln(string(jsonBody))
-		log.Fatalln(err)
 	}
 	languages := make([]string, 0, len(languageMap))
 	for key := range languageMap {
@@ -128,8 +125,6 @@ func getRepoPath(originalPath string) (string, error) {
 	if len(pathVars) != 6 || pathVars[5] == "" {
 		return DefaultRepoPath, errors.New("Invalid URL PATH: " + URLPath)
 	}
-	//@TODO regex filtering username
-
 	URLPath = strings.TrimPrefix(URLPath, ServiceBasePath)
 	return strings.Replace(URLPath, "github.com", "repos", 1), nil
 }
@@ -137,11 +132,11 @@ func getRepoPath(originalPath string) (string, error) {
 func getRequestBody(repoPath string) []byte {
 	response, err := http.Get(GithubAPIHostURL + repoPath)
 	if err != nil {
-
+		log.Printf("No repsonse from %s, error: %+v", GithubAPIHostURL+repoPath, err)
 	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-
+		log.Printf("Unable to read response body\n %+v, error: %+v", response.Body, err)
 	}
 	response.Body.Close()
 	return body

@@ -134,10 +134,6 @@ var FullServiceTest = func(path string, devEnv bool, expectError bool, t *testin
 	}
 }
 
-func TestRunServiceRemote(t *testing.T) {
-	FullServiceTest(ServiceBasePath+DefaultRepoPath, true, false, t)
-}
-
 func TestRunServiceLocal(t *testing.T) {
 	FullServiceTest(ServiceBasePath+DefaultRepoPath, true, false, t)
 }
