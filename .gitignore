@@ -1,3 +1,4 @@
 config.go
 .docker_build
 vendor/*/
+./README.md
